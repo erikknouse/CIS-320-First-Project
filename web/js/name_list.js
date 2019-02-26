@@ -32,7 +32,7 @@ function validatePhone(){
 }
 
 function validateBirthday(){
-    var regex = /^\d{2}\/\d{2}\/\d{4}$/
+    var regex = /^\d{4}\-\d{2}\-\d{2}$/
     if(regex.test($('#birthday').val())){
         $('#birthday').removeClass("is-invalid");
         $('#birthday').addClass("is-valid");
@@ -44,8 +44,13 @@ function updateTable() {
     var url = "api/name_list_get";
 
     $.getJSON(url, null, function(result) {
-
-        for (var i = 0; i < result.length; i++) {
+        $('#datatable tbody').html('<tr><td>' + result[0].id+ '</td>' +
+            '<td>' + result[0].first + '</td>' +
+            '<td>' + result[0].last + '</td>' +
+            '<td>' + result[0].email + '</td>' +
+            '<td>' + result[0].phone + '</td>' +
+            '<td>' + result[0].birthday + '</td></tr>');
+        for (var i = 1; i < result.length; i++) {
             $('#datatable tbody').append('<tr><td>' + result[i].id+ '</td>' +
                 '<td>' + result[i].first + '</td>' +
                 '<td>' + result[i].last + '</td>' +
@@ -95,6 +100,36 @@ function showSaveChanges(){
     validateEmail();
     validatePhone();
     validateBirthday();
+    jqueryPostJSONButtonAction();
+    $('#myModal').modal('hide');
     console.log("Saving Changes")
 
+}
+function jqueryPostJSONButtonAction() {
+
+    var url = "api/name_list_edit";
+    var firstNameField = $("#firstName").val();
+    var lastNameField = $("#lastName").val();
+    var emailField = $("#email").val();
+    var phoneField = $("#phone").val();
+    var birthdayField = $("#birthday").val();
+    var dataToServer = {
+        first : firstNameField,
+        last : lastNameField,
+        email : emailField,
+        phone : phoneField,
+        birthday : birthdayField
+    };
+
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: JSON.stringify(dataToServer),
+        success: [function(dataFromServer) {
+            console.log(dataFromServer);
+            updateTable()
+        }],
+        contentType: "application/json",
+        dataType: 'text'
+    });
 }
