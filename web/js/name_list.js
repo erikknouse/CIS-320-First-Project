@@ -81,13 +81,27 @@ function showDialogAdd() {
     // opened or hit edit.
     // I'm getting it started, you can finish.
     $('#id').val("");
-    $('#firstName').val("");
-    $('#lastName').val("");
-    $('#email').val("");
-    $('#phone').val("");
-    $('#birthday').val("");
 
-    // Show the hidden dialog
+    $('#firstName').val("");
+    $('#firstName').removeClass("is-valid");
+    $('#firstName').removeClass("is-invalid");
+
+    $('#lastName').val("");
+    $('#lastName').removeClass("is-invalid");
+    $('#lastName').removeClass("is-valid");
+
+    $('#email').val("");
+    $('#email').removeClass("is-invalid");
+    $('#email').removeClass("is-valid");
+
+    $('#phone').val("");
+    $('#phone').removeClass("is-invalid");
+    $('#phone').removeClass("is-valid");
+
+    $('#birthday').val("");
+    $('#birthday').removeClass("is-invalid");
+    $('#birthday').removeClass("is-valid");
+
     $('#myModal').modal('show');
 }
 
@@ -100,9 +114,12 @@ function showSaveChanges(){
     validateEmail();
     validatePhone();
     validateBirthday();
-    jqueryPostJSONButtonAction();
-    $('#myModal').modal('hide');
-    console.log("Saving Changes")
+    if($('#firstName').hasClass("is-valid") && $('#lastName').hasClass("is-valid") && $('#email').hasClass("is-valid") && $('#phone').hasClass("is-valid") && $('#birthday').hasClass("is-valid")) {
+        jqueryPostJSONButtonAction();
+        $('#myModal').modal('hide');
+        console.log("Saving Changes")
+    }
+
 
 }
 function jqueryPostJSONButtonAction() {
