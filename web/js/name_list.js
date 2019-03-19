@@ -49,14 +49,16 @@ function updateTable() {
             '<td>' + result[0].last + '</td>' +
             '<td>' + result[0].email + '</td>' +
             '<td>' + result[0].phone + '</td>' +
-            '<td>' + result[0].birthday + '</td></tr>');
+            '<td>' + result[0].birthday + '</td>' +
+            '<td><button type=\'button\' name=\'delete\' class=\'deleteButton btn\' value=\'' + result[0].id + '\'>Delete</button></td></tr>');
         for (var i = 1; i < result.length; i++) {
             $('#datatable tbody').append('<tr><td>' + result[i].id+ '</td>' +
                 '<td>' + result[i].first + '</td>' +
                 '<td>' + result[i].last + '</td>' +
                 '<td>' + result[i].email + '</td>' +
                 '<td>' + result[i].phone + '</td>' +
-                '<td>' + result[i].birthday + '</td></tr>');
+                '<td>' + result[i].birthday + '</td>' +
+                '<td><button type=\'button\' name=\'delete\' class=\'deleteButton btn\' value=\'' + result[i].id + '\'>Delete</button></td></tr>');
                 console.log(result[i]);
         }
 
@@ -105,6 +107,26 @@ function showDialogAdd() {
     $('#myModal').modal('show');
 }
 
+
+$(document).on("click", ".deleteButton", deleteItem);
+
+function deleteItem(e) {
+    console.log("Delete");
+    console.log(e.target.value);
+    var url = "api/name_list_delete";
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: e.target.value,
+        success: [function(dataFromServer) {
+            console.log(dataFromServer);
+            updateTable()
+        }],
+        contentType: "application/json",
+        dataType: 'text'
+    });
+}
+
 var saveChangesButton = $('#saveChanges');
 saveChangesButton.on("click", showSaveChanges);
 
@@ -149,4 +171,6 @@ function jqueryPostJSONButtonAction() {
         contentType: "application/json",
         dataType: 'text'
     });
+
 }
+
