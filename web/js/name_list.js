@@ -50,7 +50,8 @@ function updateTable() {
             '<td>' + result[0].email + '</td>' +
             '<td>' + result[0].phone + '</td>' +
             '<td>' + result[0].birthday + '</td>' +
-            '<td><button type=\'button\' name=\'delete\' class=\'deleteButton btn\' value=\'' + result[0].id + '\'>Delete</button></td></tr>');
+            '<td><button type=\'button\' name=\'delete\' class=\'deleteButton btn\' value=\'' + result[0].id + '\'>Delete</button></td>' +
+            '<td><button type=\'button\' name=\'edit\' class=\'editButton btn\' value=\'' + result[0].id + '\'>Edit</button></td></tr>');
         for (var i = 1; i < result.length; i++) {
             $('#datatable tbody').append('<tr><td>' + result[i].id+ '</td>' +
                 '<td>' + result[i].first + '</td>' +
@@ -58,7 +59,8 @@ function updateTable() {
                 '<td>' + result[i].email + '</td>' +
                 '<td>' + result[i].phone + '</td>' +
                 '<td>' + result[i].birthday + '</td>' +
-                '<td><button type=\'button\' name=\'delete\' class=\'deleteButton btn\' value=\'' + result[i].id + '\'>Delete</button></td></tr>');
+                '<td><button type=\'button\' name=\'delete\' class=\'deleteButton btn\' value=\'' + result[i].id + '\'>Delete</button></td>' +
+                '<td><button type=\'button\' name=\'edit\' class=\'editButton btn\' value=\'' + result[i].id + '\'>Edit</button></td></tr>');
                 console.log(result[i]);
         }
 
@@ -126,6 +128,41 @@ function deleteItem(e) {
         dataType: 'text'
     });
 }
+
+$(document).on("click", ".editButton", editItem);
+
+function editItem(e) {
+    console.debug("Edit");
+    console.debug(e.target.value);
+
+    // Grab the id from the event
+    var id = e.target.value;
+
+// This next line is fun.
+// "e" is the event of the mouse click
+// "e.target" is what the user clicked on. The button in this case.
+// "e.target.parentNode" is the node that holds the button. In this case, the table cell.
+// "e.target.parentNode.parentNode" is the parent of the table cell. In this case, the table row.
+// "e.target.parentNode.parentNode.querySelectorAll("td")" gets an array of all matching table cells in the row
+// "e.target.parentNode.parentNode.querySelectorAll("td")[0]" is the first cell. (You can grab cells 0, 1, 2, etc.)
+// "e.target.parentNode.parentNode.querySelectorAll("td")[0].innerHTML" is content of that cell. Like "Sam" for example.
+// How did I find this long chain? Just by setting a breakpoint and using the interactive shell in my browser.
+    var firstName = e.target.parentNode.parentNode.querySelectorAll("td")[1].innerHTML;
+    var lastName = e.target.parentNode.parentNode.querySelectorAll("td")[2].innerHTML;
+    var email = e.target.parentNode.parentNode.querySelectorAll("td")[3].innerHTML;
+    var phone = e.target.parentNode.parentNode.querySelectorAll("td")[4].innerHTML;
+    var birthday = e.target.parentNode.parentNode.querySelectorAll("td")[5].innerHTML;
+
+    $('#id').val(id); // Yes, now we set and use the hidden ID field
+    $('#firstName').val(firstName);
+    $('#lastName').val(lastName);
+    $('#email').val(email);
+    $('#phone').val(phone);
+    $('#birthday').val(birthday);
+    $('#myModal').modal('show');
+}
+
+
 
 var saveChangesButton = $('#saveChanges');
 saveChangesButton.on("click", showSaveChanges);

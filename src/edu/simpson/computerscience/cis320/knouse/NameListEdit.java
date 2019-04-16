@@ -42,7 +42,22 @@ public class NameListEdit extends HttpServlet {
         // Print that this is a post
         out.println("Post");
 
+        boolean hasID = false;
+        try{
+            String line;
+            while((line = bufferedReader.readLine()) != null){
+                stringBuilder.append(line).append("\n");
+                if(line.contains("id")){
+                    hasID = true;
+                }
+            }
+        }
+        finally {
+            bufferedReader.close();
+        }
+
         Person person = gson.fromJson(stringBuilder.toString(), Person.class);
+        boolean valid = false;
 
         // Just print the data out to confirm we got it.
         //out.println("fieldname='"+fieldname+"'");
@@ -55,9 +70,17 @@ public class NameListEdit extends HttpServlet {
             phoneValidationPattern.matcher(person.getPhone()).find() &&
             birthdayValidationPattern.matcher(person.getBirthday()).find()) {
             out.println("Passed validation");
-            PersonDAO.addPerson(person);
+            valid = true;
         } else {
             out.println("Did not pass validation");
+        }
+        if(valid){
+            if(hasID){
+                PersonDAO.editPerson(person);
+            }
+            else{
+                PersonDAO.addPerson(person);
+            }
         }
 
 
