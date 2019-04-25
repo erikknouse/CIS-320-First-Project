@@ -22,13 +22,13 @@ public class NameListEdit extends HttpServlet {
     private Pattern phoneValidationPattern;
     private Pattern birthdayValidationPattern;
 
-    public void FormTestServlet() {
+    public NameListEdit() {
         // --- Compile and set up all the regular expression patterns here ---
-        firstNameValidationPattern = Pattern.compile("/^[A-Za-z]+(((\\'|\\-|\\.)?([A-Za-z])+))?$/");
-        lastNameValidationPattern = Pattern.compile("/^[A-Za-z]+(((\\'|\\-|\\.)?([A-Za-z])+))?$/");
-        emailValidationPattern = Pattern.compile("/^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$/");
-        phoneValidationPattern = Pattern.compile("/((\\(\\d{3}\\) ?)|(\\d{3}-))?\\d{3}-\\d{4}/");
-        birthdayValidationPattern = Pattern.compile("/^\\d{4}\\-\\d{2}\\-\\d{2}$/");
+        firstNameValidationPattern = Pattern.compile("^[A-Za-z]+(((\\'|\\-|\\.)?([A-Za-z])+))?$");
+        lastNameValidationPattern = Pattern.compile("^[A-Za-z]+(((\\'|\\-|\\.)?([A-Za-z])+))?$");
+        emailValidationPattern = Pattern.compile("^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$");
+        phoneValidationPattern = Pattern.compile("((\\(\\d{3}\\) ?)|(\\d{3}-))?\\d{3}-\\d{4}");
+        birthdayValidationPattern = Pattern.compile("^\\d{4}\\-\\d{2}\\-\\d{2}$");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -41,13 +41,16 @@ public class NameListEdit extends HttpServlet {
 
         // Print that this is a post
         out.println("Post");
-
         boolean hasID = false;
         try{
+
             String line;
             while((line = bufferedReader.readLine()) != null){
+                System.out.println("test");
                 stringBuilder.append(line).append("\n");
+                System.out.println(line);
                 if(line.contains("id")){
+                    System.out.println("line contains id");
                     hasID = true;
                 }
             }
@@ -58,44 +61,35 @@ public class NameListEdit extends HttpServlet {
 
         Person person = gson.fromJson(stringBuilder.toString(), Person.class);
         boolean valid = false;
-
+        System.out.println(person.getFirst());
         // Just print the data out to confirm we got it.
         //out.println("fieldname='"+fieldname+"'");
-
+        System.out.println(firstNameValidationPattern.matcher(person.getFirst()));
+        System.out.println(firstNameValidationPattern.matcher(person.getFirst()).find());
+        System.out.println(lastNameValidationPattern.matcher(person.getLast()).find());
+        System.out.println(emailValidationPattern.matcher(person.getEmail()).find());
         // Now create matcher object.
-
         if (firstNameValidationPattern.matcher(person.getFirst()).find() &&
             lastNameValidationPattern.matcher(person.getLast()).find() &&
             emailValidationPattern.matcher(person.getEmail()).find() &&
             phoneValidationPattern.matcher(person.getPhone()).find() &&
             birthdayValidationPattern.matcher(person.getBirthday()).find()) {
-            out.println("Passed validation");
+            System.out.println("Passed validation");
             valid = true;
         } else {
-            out.println("Did not pass validation");
+            System.out.println("Did not pass validation");
         }
         if(valid){
             if(hasID){
+                System.out.println("testhas");
                 PersonDAO.editPerson(person);
             }
             else{
+                System.out.println("testnot");
                 PersonDAO.addPerson(person);
             }
         }
 
-
-
-        try {
-            String line = bufferedReader.readLine();
-            while (line != null) {
-                stringBuilder.append(line).append("\n");
-                line = bufferedReader.readLine();
-            }
-        }
-        finally{
-            bufferedReader.close();
-        }
-        PersonDAO.addPerson(gson.fromJson(stringBuilder.toString(), Person.class));
 
     }
 

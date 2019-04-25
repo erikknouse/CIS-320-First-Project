@@ -147,6 +147,7 @@ function editItem(e) {
 // "e.target.parentNode.parentNode.querySelectorAll("td")[0]" is the first cell. (You can grab cells 0, 1, 2, etc.)
 // "e.target.parentNode.parentNode.querySelectorAll("td")[0].innerHTML" is content of that cell. Like "Sam" for example.
 // How did I find this long chain? Just by setting a breakpoint and using the interactive shell in my browser.
+    var id = e.target.parentNode.parentNode.querySelectorAll("td")[0].innerHTML;
     var firstName = e.target.parentNode.parentNode.querySelectorAll("td")[1].innerHTML;
     var lastName = e.target.parentNode.parentNode.querySelectorAll("td")[2].innerHTML;
     var email = e.target.parentNode.parentNode.querySelectorAll("td")[3].innerHTML;
@@ -184,18 +185,32 @@ function showSaveChanges(){
 function jqueryPostJSONButtonAction() {
 
     var url = "api/name_list_edit";
+    var idField = $("#id").val();
     var firstNameField = $("#firstName").val();
     var lastNameField = $("#lastName").val();
     var emailField = $("#email").val();
     var phoneField = $("#phone").val();
     var birthdayField = $("#birthday").val();
-    var dataToServer = {
-        first : firstNameField,
-        last : lastNameField,
-        email : emailField,
-        phone : phoneField,
-        birthday : birthdayField
-    };
+    var dataToServer;
+    if(idField) {
+        dataToServer = {
+            id: idField,
+            first: firstNameField,
+            last: lastNameField,
+            email: emailField,
+            phone: phoneField,
+            birthday: birthdayField
+        };
+    }
+    else{
+        dataToServer = {
+            first: firstNameField,
+            last: lastNameField,
+            email: emailField,
+            phone: phoneField,
+            birthday: birthdayField
+        };
+    }
 
     $.ajax({
         type: 'POST',
